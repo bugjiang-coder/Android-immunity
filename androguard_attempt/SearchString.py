@@ -6,13 +6,80 @@ from androguard.core.bytecodes import dvm
 from androguard.core.analysis import analysis
 from textblob import TextBlob
 
-
+# 对apk进行处理
 def get_androguard_obj(apkfile):
     a = apk.APK(apkfile)  # 获取APK文件对象
     d = dvm.DalvikVMFormat(a.get_dex())  # 获取DEX文件对象
     dx = analysis.Analysis(d)  # 获取分析结果对象
     dx.create_xref()  # 这里需要创建一下交叉引用
     return (a, d, dx)
+
+# 输出所有字符串
+def output_calling_method(strs):
+    cnt = 1  # 输出计数
+    # 输出处理结果
+    fout = open(".\\output.txt", "w",encoding='utf-8')
+    for s in strs:
+        text = str(s.get_value())
+        blob = TextBlob(text)
+        score = blob.sentiment.polarity
+
+        fout.write("[%d]%s || %f" % (cnt, text, score))
+        cnt += 1
+        for call in s.get_xref_from():
+            try:
+                fout.write("\n\t"+str(call))
+            except:
+                print("write error")
+
+        fout.write('\n\n')
+
+    fout.close()
+
+def output_calling_method_pos(strs):
+    cnt = 1
+    fout_p = open(".\\output_pos.txt", "w",encoding='utf-8')
+
+    for s in strs:
+        text = str(s.get_value())
+        blob = TextBlob(text)
+        score = blob.sentiment.polarity
+        if len(blob.words) >= 4:
+            if score > 0:
+                fout_p.write("[%d]%s || %f" % (cnt, text, score))
+                cnt += 1
+                for call in s.get_xref_from():
+                    # 打印谁调用了该string
+                    try:
+                        fout_p.write("\n\t"+str(call))
+                    except:
+                        print("write error")
+                fout_p.write('\n\n')
+
+    fout_p.close()
+
+def output_calling_method_neg(strs):
+    cnt = 1
+    fout_n = open(".\\output_neg.txt", "w",encoding='utf-8')
+
+    for s in strs:
+        text = str(s.get_value())
+        blob = TextBlob(text)
+        score = blob.sentiment.polarity
+        if len(blob.words) >= 4:
+            if score < 0:
+                fout_n.write("[%d]%s || %f" % (cnt, text, score))
+                cnt += 1
+                for call in s.get_xref_from():
+                    # 打印谁调用了该string
+                    try:
+                        fout_n.write("\n\t"+str(call))
+                    except:
+                        print("write error")
+                fout_n.write('\n\n')
+
+    fout_n.close()
+
 
 
 # 要分析的apk路径
@@ -26,54 +93,8 @@ if __name__ == '__main__':
     # 获取所有的string
     strs = dx.get_strings()
 
-    cnt1 = 1  # 输出计数
-    cnt2 = 1
-    cnt3 = 1
-    # 输出处理结果
-    fout = open(".\\output.txt", "w")
-    fout_n = open(".\\output_neg.txt", "w")
-    fout_p = open(".\\output_pos.txt", "w")
+    output_calling_method(strs)
+    output_calling_method_neg(strs)
+    output_calling_method_pos(strs)
+    
 
-    for s in strs:
-        text = str(s.get_value())
-        blob = TextBlob(text)
-        score = blob.sentiment.polarity
-
-        fout.write("[%d]%s || %f" % (cnt1, text, score))
-        cnt1 += 1
-        for call in s.get_xref_from():
-            # print(call.get_method().source())
-            # 打印谁调用了该string
-            try:
-                fout.write("\n\t"+str(call))
-            except:
-                print("error1")
-            
-        fout.write('\n\n')
-
-        if len(blob.words) >= 4:
-            if score > 0:
-                fout_p.write("[%d]%s || %f" % (cnt2, text, score))
-                cnt2 += 1
-                for call in s.get_xref_from():
-                    # 打印谁调用了该string
-                    try:
-                        fout_p.write("\n\t"+str(call))
-                    except:
-                        print("error2")
-                fout_p.write('\n\n')
-
-            elif score < 0:
-                fout_n.write("[%d]%s || %f" % (cnt3, text, score))
-                cnt3 += 1
-                for call in s.get_xref_from():
-                    try:
-                    # 打印谁调用了该string
-                        fout_n.write("\n\t"+str(call))
-                    except:
-                        print("error")
-                fout_n.write('\n\n')
-
-    fout.close()
-    fout_n.close()
-    fout_p.close()

@@ -18,3 +18,28 @@ TextBlob 是一个用于处理文本数据的 Python（2 和 3）库。 它提�
 
 快速指南：https://textblob.readthedocs.io/en/latest/quickstart.html#quickstart
 
+
+
+## 4.get_androguard_obj(apkfile):
+
+输出所有字符串用textblob分析后的情感评分，正为积极，负数为消极，并且输出调用该字符串的方法
+
+输出示例：
+
+```txt
+[116]Failed to log throwable. || -0.500000
+	(<analysis.ClassAnalysis Lbo/app/n1$b;>, <analysis.MethodAnalysis Lbo/app/n1$b;->a()V [access_flags=public final] @ 0x2948b8>)
+	(<analysis.ClassAnalysis Lbo/app/w0;>, <analysis.MethodAnalysis Lbo/app/w0;->uncaughtException(Ljava/lang/Thread; Ljava/lang/Throwable;)V [access_flags=public] @ 0x29cf88>)
+	(<analysis.ClassAnalysis Lbo/app/s3;>, <analysis.MethodAnalysis Lbo/app/s3;->a(Lbo/app/z; Ljava/lang/Throwable;)V [access_flags=public static] @ 0x29ac1c>)
+	(<analysis.ClassAnalysis Lbo/app/p;>, <analysis.MethodAnalysis Lbo/app/p;->a(Lbo/app/z; Ljava/lang/Throwable;)V [access_flags=public final] @ 0x2987e0>)
+	(<analysis.ClassAnalysis Lbo/app/t3;>, <analysis.MethodAnalysis Lbo/app/t3;->a(Lbo/app/z; Ljava/lang/Throwable;)V [access_flags=public] @ 0x29b7c4>)
+
+```
+
+### 4.1.output_calling_method_neg(strs)：
+
+输出单词数大于4且判断为消极的strings
+
+### 4.2.output_calling_method_pos(strs)：
+
+输出单词数大于4且判断为积极的strings
