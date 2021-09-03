@@ -4,9 +4,34 @@
 
 直接利用androguard搜素到的字符串，使用TextBlob包，对找到的字符串进行情感分析，并且输出找到的字符对应的引用位置。
 
-## 2.get_androguard_obj(apkfile):
+androguard GitHub地址:https://github.com/androguard/androguard
 
-实现对apk的解析
+## 2.dx.get_strings()
+
+androguard提供的get_strings() 的字符串来源有待分析，看源码去:
+
+```python
+    def get_strings(self):
+        """
+        Returns a list of :class:`StringAnalysis` objects
+        :rtype: Iterator[StringAnalysis]
+        """
+        return self.strings.values()
+```
+
+
+
+在 create_xref()中对strings进行添加，通过源码可以发现，androguard中的get_strings() 只能找到代码中的字符串，放在**资源文件**中的字符串就无法找到。可以这部分可能要单独编写代码。
+
+```python
+ # 3) check for string usage: const-string (0x1a), const-string/jumbo (0x1b)
+    elif 0x1a <= op_value <= 0x1b:
+        string_value = instruction.cm.vm.get_cm_string(instruction.get_ref_kind())
+        if string_value not in self.strings:
+            self.strings[string_value] = StringAnalysis(string_value)
+
+            self.strings[string_value].add_xref_from(cur_cls, cur_meth, off)
+```
 
 
 
@@ -43,3 +68,9 @@ TextBlob 是一个用于处理文本数据的 Python（2 和 3）库。 它提�
 ### 4.2.output_calling_method_pos(strs)：
 
 输出单词数大于4且判断为积极的strings
+
+
+
+## 5.get_androguard_obj(apkfile):
+
+实现对apk的解析
