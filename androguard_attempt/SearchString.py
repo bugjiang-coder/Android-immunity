@@ -80,6 +80,29 @@ def output_calling_method_neg(strs):
 
     fout_n.close()
 
+def output_arsc_strings(a):
+    arscobj = a.get_android_resources()
+    if not arscobj:
+        print("The APK does not contain a resources file!")
+        return
+    
+    fout_s = open(".\\output_arsc.txt", "w",encoding='utf-8')
+    strings = arscobj.get_resolved_strings()
+    for pkg in strings:
+        if pkg ==  a.get_package():#只输出该报名下的string
+            fout_s.write(pkg + ":\n")
+            for locale in strings[pkg]:
+                if locale ==  'DEFAULT':
+                    for s in strings[pkg][locale]:
+                        fout_s.write(str(s) +'\t'+strings[pkg][locale][s] + '\n')
+                    # 只输出默认语言的strings.xml文件 s为string的id 右边为string
+                    # eg:
+                    # 2131427331      Navigate up
+                    # 2131427332      More options
+                    # 2131427333      Done
+    fout_s.close()
+                    
+
 
 
 # 要分析的apk路径
@@ -96,5 +119,7 @@ if __name__ == '__main__':
     output_calling_method(strs)
     output_calling_method_neg(strs)
     output_calling_method_pos(strs)
+
+    output_arsc_strings(a)
     
 

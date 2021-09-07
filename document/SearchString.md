@@ -71,6 +71,52 @@ TextBlob 是一个用于处理文本数据的 Python（2 和 3）库。 它提�
 
 
 
+### 4.3.output_arsc_strings(a):
+
+输出资源文件中的string.xml的string和其对应的id
+
+只输出默认语言的strings.xml文件 
+
+输出示例：
+
+```txt
+com.telkom.mwallet:
+2131886080	here
+2131886081	seconds
+2131886082	About
+2131886083	Activate Now
+2131886084	Add
+2131886085	Add Payment Method
+```
+
+注：左边为string的id 右边为string
+
+
+
 ## 5.get_androguard_obj(apkfile):
 
 实现对apk的解析
+
+
+
+## 6.get_android_resources(self):
+
+对安卓资源文件解析
+
+```python
+    def get_android_resources(self):
+        """
+        Return the :class:`~androguard.core.bytecodes.axml.ARSCParser` object which corresponds to the resources.arsc file
+        :rtype: :class:`~androguard.core.bytecodes.axml.ARSCParser`
+        """
+        try:
+            return self.arsc["resources.arsc"]
+        except KeyError:
+            if "resources.arsc" not in self.zip.namelist():
+                # There is a rare case, that no resource file is supplied.
+                # Maybe it was added manually, thus we check here
+                return None
+            self.arsc["resources.arsc"] = ARSCParser(self.zip.read("resources.arsc"))
+            return self.arsc["resources.arsc"]
+```
+
