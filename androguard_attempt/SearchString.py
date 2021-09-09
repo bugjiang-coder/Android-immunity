@@ -113,13 +113,14 @@ if __name__ == '__main__':
     # 处理apk
     a, d, dx = get_androguard_obj(sp)
 
-    # 获取所有的string
+    # 获取smali中的所有string
     strs = dx.get_strings()
 
     output_calling_method(strs)
     output_calling_method_neg(strs)
     output_calling_method_pos(strs)
 
+    # 获取资源文件中的string
     output_arsc_strings(a)
     
 
