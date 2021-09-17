@@ -56,3 +56,27 @@ find_methods(classname=’.\*’*,* *methodname=’.\*’,* *descriptor=’.\*�
 ```
 
 https://github.com/androguard/androguard/blob/master/androguard/core/analysis/analysis.py
+
+
+
+
+
+## 3.发现奇怪的bug
+
+bug描述：在ipython中可以找到大量的调用方法，但是一到了自己引用包就无法将所有的包找到，只能找到一个包，极有可能是我在python脚本编写的时候对包的使用不当
+
+
+
+读源码：
+
+在使用ipython的时候，cli使用的是如下方式启动reverse过程：
+
+```python
+  if filetype == 'APK':
+        print("Loaded APK file...")
+        a, d, dx = s.get_objects_apk(digest=h)
+```
+
+解决不了啊
+
+！！！
